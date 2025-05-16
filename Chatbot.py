@@ -92,7 +92,7 @@ if prompt := st.chat_input(
     search_results = search_orders(prompt, df)
     if not search_results.empty:
         response_text = f"🔍 {len(search_results)}건의 결과를 찾았습니다:\n"
-        response_text += search_results[["주문번호", "주문자명", "주문일시", "상품명(한국어 쇼핑몰)"]].to_markdown(index=False)
+        response_text += search_results[["주문번호", "주문자명", "주문일시", "상품명(한국어 쇼핑몰)", "수량"]].to_markdown(index=False)
 
     else:
         response_text = "😢 해당 조건에 맞는 주문이 없습니다"
