@@ -61,6 +61,9 @@ def search_orders(query, df):
     for kw in keywords:
         mask = mask & (
             df["주문자명"].astype(str).str.contains(kw, case=False, na=False)
+            | df["약국명"]
+            .astype(str)
+            .str.contains(kw, case=False, na=False)
             | df["상품명(한국어 쇼핑몰)"]
             .astype(str)
             .str.contains(kw, case=False, na=False)
@@ -87,12 +90,22 @@ for message in st.session_state.messages:
 
 # 사용자 입력
 if prompt := st.chat_input(
-    "주문자명, 상품명, 주문일시(YYYY-MM-DD 형태로 입력) 중 아무거나 섞어서 입력해보세요!"
+    "주문자명, 약국명, 상품명, 주문일시(YYYY-MM-DD 형태로 입력) 중 아무거나 섞어서 입력해보세요!"
 ):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
+    # CSV 파일이 업로드되지 않았을 경우 예외 처리
+    if uploaded_file is None or 'df' not in locals():
+        with st.chat_message("assistant"):
+            st.error("📂 CSV 파일을 먼저 업로드해 주세요!")
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": "📂 CSV 파일을 먼저 업로드해 주세요!"
+        })
+        return 
+    
     # 검색 실행
     search_results = search_orders(prompt, df)
     if not search_results.empty:
