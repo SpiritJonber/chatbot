@@ -82,7 +82,7 @@ for message in st.session_state.messages:
 
 # 사용자 입력
 if prompt := st.chat_input(
-    "주문자명, 상품명, 주문일시 중 아무거나 섞어서 입력해보세요!"
+    "주문자명, 상품명, 주문일시(YYYY-MM-DD 형태로 입력) 중 아무거나 섞어서 입력해보세요!"
 ):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
