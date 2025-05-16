@@ -130,3 +130,4 @@ if prompt := st.chat_input(
             data=output,
             file_name=f"{order_name}_{today_str}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
