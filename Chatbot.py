@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
+import io
 from langchain_core.messages.chat import ChatMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
+from datetime import datetime
 
 # API KEY를 환경변수로 관리하기 위한 설정 파일
 from dotenv import load_dotenv
@@ -104,3 +106,27 @@ if prompt := st.chat_input(
     with st.chat_message("assistant"):
         st.markdown(response_text)
     st.session_state.messages.append({"role": "assistant", "content": response_text})
+    # 검색 결과가 있을 때만 다운로드 기능 추가
+    if not search_results.empty:
+    # 오늘 날짜를 YYYYMMDD 형식으로 가져오기
+    today_str = datetime.today().strftime('%Y%m%d')
+
+    # 주문자명이 여러 명일 수 있으므로, 첫 번째 이름만 추출하거나 '다수' 처리
+    unique_names = search_results['주문자명'].dropna().unique()
+    if len(unique_names) == 1:
+        order_name = unique_names[0]
+    else:
+        order_name = '다수'
+
+    # 엑셀 파일로 변환
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        search_results.to_excel(writer, index=False, sheet_name='검색결과')
+    output.seek(0)
+
+    # 다운로드 버튼 출력
+    st.download_button(
+        label=f"📥 결과 다운로드: {order_name}_{today_str}.xlsx",
+        data=output,
+        file_name=f"{order_name}_{today_str}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
