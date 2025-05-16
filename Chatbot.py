@@ -11,7 +11,10 @@ from dotenv import load_dotenv
 # API KEY 정보로드
 load_dotenv()
 
-st.title("참스토어 주문 검색 챗봇")
+st.set_page_config(
+    page_title="참스토어 주문 검색 챗봇",
+    layout="wide"  # 화면을 넓게 사용
+)
 
 # CSV 파일 업로드하기
 uploaded_file = st.file_uploader("CSV 파일 업로드", type="csv")
