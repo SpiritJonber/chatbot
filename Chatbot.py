@@ -61,7 +61,7 @@ def search_orders(query, df):
     for kw in keywords:
         mask = mask & (
             df["주문자명"].astype(str).str.contains(kw, case=False, na=False)
-            | df["약국명"]
+            | df["회원추가항목_약국명"]
             .astype(str)
             .str.contains(kw, case=False, na=False)
             | df["상품명(한국어 쇼핑몰)"]
